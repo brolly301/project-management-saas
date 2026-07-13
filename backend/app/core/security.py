@@ -1,7 +1,10 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 
+import uuid
 import jwt
+
+from jwt import InvalidTokenError
 
 from app.core.config import settings
 
@@ -30,3 +33,21 @@ def hash_password(password: str) -> str:
 
 def verify_password(password: str, hashed_password: str) -> bool:
     return password_context.verify(password, hashed_password) 
+
+def decode_access_token(token: str) -> uuid.UUID | None:
+    try: 
+        payload = jwt.decode(
+            token,
+            settings.jwt_secret,
+            algorithms=[settings.jwt_algorithm]
+        )
+
+        subject = payload.get("sub")
+
+        if subject is None:
+            return None
+        
+        return uuid.UUID(subject)
+    
+    except (InvalidTokenError, ValueError):
+        return None
