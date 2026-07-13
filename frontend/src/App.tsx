@@ -1,11 +1,5 @@
-function App() {
-  return (
-    <>
-      <section>
-        <h1>Test</h1>
-      </section>
-    </>
-  );
-}
+import AppRoutes from "./routes/AppRoutes";
 
-export default App;
+export default function App() {
+  return <AppRoutes />;
+}
