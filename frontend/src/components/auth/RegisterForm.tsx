@@ -1,14 +1,20 @@
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { useForm } from "react-hook-form";
-import type { RegisterFormData } from "../../schemas/auth/register.schema";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "../../schemas/auth/register.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function RegisterForm() {
   const {
     register,
     handleSubmit,
+
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -17,7 +23,9 @@ export default function RegisterForm() {
     },
   });
 
-  const onSubmit = (data: RegisterFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     console.log(data);
   };
 
@@ -27,24 +35,28 @@ export default function RegisterForm() {
         type="text"
         autoComplete="given-name"
         placeholder={"First Name"}
+        error={errors.firstName?.message}
         {...register("firstName")}
       />
       <Input
         type="text"
         autoComplete="family-name"
         placeholder={"Last Name"}
+        error={errors.lastName?.message}
         {...register("lastName")}
       />
       <Input
         type="email"
         autoComplete="email"
         placeholder={"Email"}
+        error={errors.email?.message}
         {...register("email")}
       />
       <Input
         type="password"
         autoComplete="new-password"
         placeholder={"Password"}
+        error={errors.password?.message}
         {...register("password")}
       />
       <Button type={"submit"} disabled={isSubmitting}>
