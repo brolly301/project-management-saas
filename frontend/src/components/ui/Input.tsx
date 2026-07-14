@@ -1,23 +1,11 @@
-type InputProps = {
-  placeholder: string;
-  field: string;
-  value: string;
-  onChange: (value: string, field: string) => void;
-};
+import { forwardRef, type ComponentPropsWithoutRef } from "react";
 
-export default function Input({
-  placeholder,
-  onChange,
-  field,
-  value,
-}: InputProps) {
-  return (
-    <div className=" border-black border ">
-      <input
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value, field)}
-      />
-    </div>
-  );
-}
+type InputProps = ComponentPropsWithoutRef<"input">;
+
+const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+  return <input ref={ref} {...props} />;
+});
+
+Input.displayName = "Input";
+
+export default Input;
