@@ -1,11 +1,49 @@
-import { useState } from "react";
-import type { LoginFormData } from "../../schemas/auth/login.schema";
+import { useForm } from "react-hook-form";
+import {
+  loginSchema,
+  type LoginFormData,
+} from "../../schemas/auth/login.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 export default function LoginForm() {
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: "",
-    password: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  return <div></div>;
+  const onSubmit = async (data: LoginFormData) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    console.log(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Input
+        placeholder="Email"
+        type="email"
+        error={errors.email?.message}
+        autoComplete="email"
+        {...register("email")}
+      />
+      <Input
+        placeholder="Password"
+        type="password"
+        error={errors.password?.message}
+        autoComplete="current-password"
+        {...register("password")}
+      />
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Logging in..." : "Login"}
+      </Button>
+    </form>
+  );
 }
