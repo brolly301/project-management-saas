@@ -6,7 +6,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import { loginUser, registerUser } from "../../services/auth.service";
+import { loginUser } from "../../services/auth.service";
+import { useNavigate } from "react-router";
 
 export default function LoginForm() {
   const {
@@ -21,8 +22,11 @@ export default function LoginForm() {
     },
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data: LoginFormData) => {
     await loginUser(data);
+    navigate("/dashboard");
   };
 
   return (

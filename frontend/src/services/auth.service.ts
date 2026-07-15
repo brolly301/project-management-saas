@@ -18,3 +18,9 @@ export const loginUser = async (data: LoginFormData) => {
 
   return res.data;
 };
+
+export const getCurrentUser = async () => {
+  const res = await api.get("/users/me");
+
+  return res.data;
+};
