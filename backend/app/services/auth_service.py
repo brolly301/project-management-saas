@@ -39,7 +39,7 @@ def register(
 def login(
         credentials: UserLogin,
         db: Session
-) -> TokenResponse:
+) -> str:
     user = db.scalar(select(User).where(User.email == credentials.email))
 
     if user is None or not verify_password(credentials.password, user.hashed_password):
@@ -48,12 +48,9 @@ def login(
             detail="Invalid email or password"
         )
     
-    access_token = create_access_token(str(user.id))
+    return create_access_token(str(user.id))
 
-    return TokenResponse(
-        access_token=access_token,
-        token_type="bearer"
-    )
+    
     
 
     

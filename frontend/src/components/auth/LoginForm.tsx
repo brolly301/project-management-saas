@@ -6,6 +6,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
+import { loginUser, registerUser } from "../../services/auth.service";
 
 export default function LoginForm() {
   const {
@@ -21,8 +22,7 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    console.log(data);
+    await loginUser(data);
   };
 
   return (

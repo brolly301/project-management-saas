@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
@@ -21,6 +21,27 @@ def register_user(
 ):
     return auth_service.register(user, db)
 
-@router.post("/login", response_model=TokenResponse)
-def login_user(credentials: UserLogin, db: DatabaseSession):
-    return auth_service.login(credentials, db)
+@router.post("/login", status_code=status.HTTP_200_OK)
+def login_user(credentials: UserLogin, db: DatabaseSession, response: Response):
+    token = auth_service.login(credentials, db)
+
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        secure=False, 
+        samesite="lax",
+        max_age=60 * 30,
+        path="/",
+    )
+
+    return {"message": "Login successful"}
+
+@router.post("/logout", status_code=status.HTTP_200_OK)
+def logout_user(response: Response):
+    response.delete_cookie(
+        key="access_token",
+        path="/",
+    )
+
+    return {"message": "Logout successful"}

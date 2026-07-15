@@ -6,6 +6,7 @@ import {
   type RegisterFormData,
 } from "../../schemas/auth/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { registerUser } from "../../services/auth.service";
 
 export default function RegisterForm() {
   const {
@@ -24,9 +25,7 @@ export default function RegisterForm() {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    console.log(data);
+    await registerUser(data);
   };
 
   return (
