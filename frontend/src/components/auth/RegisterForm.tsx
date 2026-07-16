@@ -7,12 +7,16 @@ import {
 } from "../../schemas/auth/register.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "../../services/auth.service";
+import { Link, useNavigate } from "react-router";
+import AuthHeader from "./AuthHeader";
+import SocialButton from "./SocialButton";
+import Divider from "./Divider";
 
 export default function RegisterForm() {
   const {
     register,
     handleSubmit,
-
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -24,43 +28,117 @@ export default function RegisterForm() {
     },
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data: RegisterFormData) => {
-    await registerUser(data);
+    try {
+      await registerUser(data);
+      navigate("/login");
+    } catch {
+      setError("root", {
+        message: "Error signing up.",
+      });
+    }
   };
 
   return (
-    <form className="bg" onSubmit={handleSubmit(onSubmit)}>
-      <Input
-        type="text"
-        autoComplete="given-name"
-        placeholder={"First Name"}
-        error={errors.firstName?.message}
-        {...register("firstName")}
+    <section className="w-full max-w-md">
+      <AuthHeader
+        title="Create your account"
+        subtitle="Get started with Solia for free"
       />
-      <Input
-        type="text"
-        autoComplete="family-name"
-        placeholder={"Last Name"}
-        error={errors.lastName?.message}
-        {...register("lastName")}
-      />
-      <Input
-        type="email"
-        autoComplete="email"
-        placeholder={"Email"}
-        error={errors.email?.message}
-        {...register("email")}
-      />
-      <Input
-        type="password"
-        autoComplete="new-password"
-        placeholder={"Password"}
-        error={errors.password?.message}
-        {...register("password")}
-      />
-      <Button type={"submit"} disabled={isSubmitting}>
-        {isSubmitting ? "Creating account..." : "Register"}
-      </Button>
-    </form>
+      <div className="space-y-3">
+        <SocialButton provider="google">Continue with Google</SocialButton>
+
+        <SocialButton provider="github">Continue with GitHub</SocialButton>
+      </div>
+      <Divider />
+      <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-2">
+          <label
+            htmlFor="firstName"
+            className="block text-sm font-medium text-slate-700"
+          >
+            First name
+          </label>
+          <Input
+            id="firstName"
+            type="text"
+            autoComplete="given-name"
+            placeholder={"First name"}
+            error={errors.firstName?.message}
+            {...register("firstName")}
+          />
+        </div>
+        <div className="space-y-2">
+          <label
+            htmlFor="lastName"
+            className="block text-sm font-medium text-slate-700"
+          >
+            Last name
+          </label>
+          <Input
+            id="lastName"
+            type="text"
+            autoComplete="family-name"
+            placeholder={"Last name"}
+            error={errors.lastName?.message}
+            {...register("lastName")}
+          />
+        </div>
+        <div className="space-y-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-slate-700"
+          >
+            Email Address
+          </label>
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            placeholder={"Email"}
+            error={errors.email?.message}
+            {...register("email")}
+          />
+        </div>
+        <div className="space-y-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-slate-700"
+          >
+            Password
+          </label>
+          <Input
+            id="password"
+            type="password"
+            autoComplete="new-password"
+            placeholder={"Password"}
+            error={errors.password?.message}
+            {...register("password")}
+          />
+        </div>
+        {errors.root?.message && (
+          <p
+            role="alert"
+            className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          >
+            {errors.root.message}
+          </p>
+        )}
+        <Button type={"submit"} disabled={isSubmitting}>
+          {isSubmitting ? "Creating account..." : "Create Account"}
+        </Button>
+      </form>
+      <p className="mt-8 text-center text-sm text-slate-500">
+        Already have an account?{" "}
+        <Link
+          to="/login"
+          className="font-semibold text-slate-900 transition hover:text-slate-600"
+        >
+          Log in
+        </Link>
+      </p>
+    </section>
   );
 }
