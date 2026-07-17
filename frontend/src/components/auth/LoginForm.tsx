@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router";
 import SocialButton from "./SocialButton";
 import AuthHeader from "./AuthHeader";
 import Divider from "./Divider";
+import logo from "../../assets/logo/logo.png";
 
 export default function LoginForm() {
   const {
@@ -41,6 +42,8 @@ export default function LoginForm() {
 
   return (
     <section className="w-full max-w-md">
+      <img src={logo} className="w-20 mb-8" />
+
       <AuthHeader
         title="Welcome back"
         subtitle="Log into your account to continue"

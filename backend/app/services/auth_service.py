@@ -10,7 +10,7 @@ from app.core.security import hash_password, verify_password, create_access_toke
 def register(
         user: UserCreate,
         db: Session
-) -> User: 
+) -> str: 
     existing_user = db.scalar(
         select(User).where(User.email == user.email)
     )
@@ -34,7 +34,7 @@ def register(
     db.commit()
     db.refresh(new_user)
 
-    return new_user
+    return create_access_token(str(new_user.id))
 
 def login(
         credentials: UserLogin,

@@ -33,10 +33,10 @@ export default function RegisterForm() {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       await registerUser(data);
-      navigate("/login");
+      navigate("/dashboard");
     } catch {
       setError("root", {
-        message: "Error signing up.",
+        message: "Unable to create your account. Please try again.",
       });
     }
   };
